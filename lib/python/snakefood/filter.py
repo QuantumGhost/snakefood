@@ -23,7 +23,6 @@ def do_filter(populate_parser=None):
         for line in f.xreadlines():
             try:
                 yield eval(line)
-            except Exception, e:
+            except Exception as e:
                 print_(e, sys.stderr)
                 raise SystemExit
-

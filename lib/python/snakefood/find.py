@@ -6,11 +6,13 @@ This could be considered the core of snakefood, and where all the complexity liv
 # See http://furius.ca/snakefood/ for licensing details.
 
 import sys, os, logging
+from os.path import *
+
+# FIXME: You have to port this to the ast module in order to port it to Python3.
 import compiler
 from compiler.visitor import ASTVisitor
 from compiler.ast import Discard, Const, AssName, List, Tuple
 from compiler.consts import OP_ASSIGN
-from os.path import *
 
 from snakefood.roots import find_package_root
 from snakefood.local import filter_unused_imports
@@ -261,19 +263,19 @@ def parse_python_source(fn):
     try:
         contents = open(fn, 'rU').read()
         lines = contents.splitlines()
-    except (IOError, OSError), e:
+    except (IOError, OSError) as e:
         logging.error("Could not read file '%s'." % fn)
         return None, None
 
     # Convert the file to an AST.
     try:
         ast = compiler.parse(contents)
-    except SyntaxError, e:
+    except SyntaxError as e:
         err = '%s:%s: %s' % (fn, e.lineno or '--', e.msg)
         logging.error("Error processing file '%s':\n%s" %
                       (fn, err))
         return None, lines
-    except TypeError, e:
+    except TypeError as e:
         # Note: this branch untested, applied from a user-submitted patch.
         err = '%s: %s' % (fn, str(e))
         logging.error("Error processing file '%s':\n%s" %
@@ -381,4 +383,3 @@ def find_dotted(names, parentdir=None):
         parentdir = dirname(filename)
     else:
         return filename
-
