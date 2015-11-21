@@ -20,7 +20,10 @@ def apply_cluster(cdirs, root, fn):
     if root is None:
         return root, fn
 
-    for cfn in cdirs:
+    # Note: We want to include longest matches over shortest ones that might
+    # match only as a prefix. This is in particular problematic with very short
+    # prefixes.
+    for cfn in cdirs.sort(key=len, reverse=True):
         if fn.startswith(cfn):
             return root, cfn
     else:
@@ -62,5 +65,3 @@ def main():
         clusfiles[cfrom].add(cto)
 
     output_depends(clusfiles)
-
-
